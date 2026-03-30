@@ -1,6 +1,6 @@
 {
   "name": "@mantissaio/medusa-payment-wompi",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Wompi El Salvador payment provider plugin for MedusaJS v2",
   "author": "Mantissa.io",
   "license": "MIT",
