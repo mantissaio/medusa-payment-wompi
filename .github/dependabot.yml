@@ -9,6 +9,11 @@ updates:
     labels:
       - dependencies
     open-pull-requests-limit: 10
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: github-actions
     directory: /
