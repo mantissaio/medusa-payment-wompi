@@ -19,6 +19,7 @@ import {
   GetPaymentStatusOutput,
   InitiatePaymentInput,
   InitiatePaymentOutput,
+  Logger,
   ProviderWebhookPayload,
   RefundPaymentInput,
   RefundPaymentOutput,
@@ -28,7 +29,6 @@ import {
   UpdatePaymentOutput,
   WebhookActionResult,
 } from "@medusajs/framework/types";
-import { Logger } from "@medusajs/medusa";
 import { createHmac } from "crypto";
 
 import { WompiClient } from "../../lib/wompi-client";
