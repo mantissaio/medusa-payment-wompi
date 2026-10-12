@@ -16,6 +16,12 @@ import {
   EnlacesPagoRecurrenteOutput,
   EditarEnlacePagoRecurrenteDto,
   AplicativoOutput,
+  TransaccionCompraOutput,
+  SuscripcionEnlacePagoRecurrenteOutput,
+  ListarEnlacesPagoParams,
+  ListarTransaccionesParams,
+  ListarEnlacesPagoRecurrenteParams,
+  ListarSuscripcionesParams,
 } from "../types";
 
 const API_BASE_URL = "https://api.wompi.sv";
@@ -129,7 +135,32 @@ export class WompiClient {
     return JSON.parse(responseText) as T;
   }
 
+  private buildQuery(params?: object): string {
+    if (!params) {
+      return "";
+    }
+
+    const search = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null) {
+        continue;
+      }
+      if (Array.isArray(value)) {
+        value.forEach((item) => search.append(key, String(item)));
+      } else {
+        search.append(key, String(value));
+      }
+    }
+
+    const query = search.toString();
+    return query ? `?${query}` : "";
+  }
+
   // EnlacePago
+
+  async listPaymentLinks(params?: ListarEnlacesPagoParams): Promise<WompiPagedList<EnlacePagoOutput>> {
+    return this.request<WompiPagedList<EnlacePagoOutput>>("GET", `/EnlacePago${this.buildQuery(params)}`);
+  }
 
   async createPaymentLink(data: CrearEnlaceDto): Promise<CrearEnlacePagoOutput> {
     return this.request<CrearEnlacePagoOutput>("POST", "/EnlacePago", data);
@@ -153,6 +184,15 @@ export class WompiClient {
 
   // TransaccionCompra
 
+  async listTransactions(
+    params?: ListarTransaccionesParams
+  ): Promise<WompiPagedList<TransaccionCompraOutput>> {
+    return this.request<WompiPagedList<TransaccionCompraOutput>>(
+      "GET",
+      `/TransaccionCompra${this.buildQuery(params)}`
+    );
+  }
+
   async getTransaction(id: string): Promise<DetalleTransaccionCompraOutput> {
     return this.request<DetalleTransaccionCompraOutput>("GET", `/TransaccionCompra/${id}`);
   }
@@ -175,6 +215,25 @@ export class WompiClient {
   }
 
   // EnlacePagoRecurrente
+
+  async listRecurringLinks(
+    params?: ListarEnlacesPagoRecurrenteParams
+  ): Promise<WompiPagedList<EnlacesPagoRecurrenteOutput>> {
+    return this.request<WompiPagedList<EnlacesPagoRecurrenteOutput>>(
+      "GET",
+      `/EnlacePagoRecurrente${this.buildQuery(params)}`
+    );
+  }
+
+  async getRecurringLinkSubscriptions(
+    id: string,
+    params?: ListarSuscripcionesParams
+  ): Promise<SuscripcionEnlacePagoRecurrenteOutput[]> {
+    return this.request<SuscripcionEnlacePagoRecurrenteOutput[]>(
+      "GET",
+      `/EnlacePagoRecurrente/${id}/suscripciones${this.buildQuery(params)}`
+    );
+  }
 
   async createRecurringLink(data: CrearEnlacePagoRecurrenteDto): Promise<CrearEnlacePagoRecurrenteOutput> {
     return this.request<CrearEnlacePagoRecurrenteOutput>("POST", "/EnlacePagoRecurrente", data);

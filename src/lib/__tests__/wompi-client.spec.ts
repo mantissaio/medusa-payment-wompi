@@ -230,5 +230,81 @@ describe("WompiClient", () => {
       const apiCall = mockFetch.mock.calls[1];
       expect(apiCall[0]).toBe("https://api.wompi.sv/EnlacePagoRecurrente");
     });
+
+    it("sends GET /EnlacePagoRecurrente with filters", async () => {
+      const client = buildClient();
+
+      mockFetch
+        .mockResolvedValueOnce(mockAuthResponse())
+        .mockResolvedValueOnce(new Response(JSON.stringify({ resultado: [], paginaActual: 1 }), { status: 200 }));
+
+      await client.listRecurringLinks({ EsActivo: true, PaginaActual: 2 });
+
+      const apiCall = mockFetch.mock.calls[1];
+      expect(apiCall[0]).toBe("https://api.wompi.sv/EnlacePagoRecurrente?EsActivo=true&PaginaActual=2");
+      expect((apiCall[1] as any).method).toBe("GET");
+    });
+
+    it("sends GET /EnlacePagoRecurrente/{id}/suscripciones", async () => {
+      const client = buildClient();
+
+      mockFetch
+        .mockResolvedValueOnce(mockAuthResponse())
+        .mockResolvedValueOnce(new Response(JSON.stringify([{ id: "sub_1", estado: 0 }]), { status: 200 }));
+
+      const result = await client.getRecurringLinkSubscriptions("rec_1", { Estado: 0 });
+
+      expect(result).toHaveLength(1);
+      const apiCall = mockFetch.mock.calls[1];
+      expect(apiCall[0]).toBe("https://api.wompi.sv/EnlacePagoRecurrente/rec_1/suscripciones?Estado=0");
+    });
+  });
+
+  describe("list endpoints", () => {
+    it("sends GET /EnlacePago with array and skips undefined params", async () => {
+      const client = buildClient();
+
+      mockFetch
+        .mockResolvedValueOnce(mockAuthResponse())
+        .mockResolvedValueOnce(new Response(JSON.stringify({ resultado: [], paginaActual: 1 }), { status: 200 }));
+
+      await client.listPaymentLinks({ Activo: false, Ids: [1, 2], Nombre: undefined });
+
+      const apiCall = mockFetch.mock.calls[1];
+      expect(apiCall[0]).toBe("https://api.wompi.sv/EnlacePago?Activo=false&Ids=1&Ids=2");
+    });
+
+    it("sends GET /EnlacePago without query string when no params", async () => {
+      const client = buildClient();
+
+      mockFetch
+        .mockResolvedValueOnce(mockAuthResponse())
+        .mockResolvedValueOnce(new Response(JSON.stringify({ resultado: [] }), { status: 200 }));
+
+      await client.listPaymentLinks();
+
+      expect(mockFetch.mock.calls[1][0]).toBe("https://api.wompi.sv/EnlacePago");
+    });
+
+    it("sends GET /TransaccionCompra with filters", async () => {
+      const client = buildClient();
+
+      mockFetch
+        .mockResolvedValueOnce(mockAuthResponse())
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ resultado: [{ idTransaccion: "tx_1" }], paginaActual: 1 }), { status: 200 })
+        );
+
+      const result = await client.listTransactions({
+        FechaInicio: "2026-01-01T00:00:00Z",
+        ResultadoTransaccion: 0,
+      });
+
+      expect(result.resultado?.[0].idTransaccion).toBe("tx_1");
+      const apiCall = mockFetch.mock.calls[1];
+      expect(apiCall[0]).toBe(
+        "https://api.wompi.sv/TransaccionCompra?FechaInicio=2026-01-01T00%3A00%3A00Z&ResultadoTransaccion=0"
+      );
+    });
   });
 });

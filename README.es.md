@@ -12,7 +12,7 @@ Recibe pagos en tu aplicacion de comercio digital con Medusa usando [Wompi El Sa
 ## Caracteristicas
 
 - Pago via pagina hosted de Wompi (Enlace de Pago)
-- Todos los metodos de pago soportados: tarjeta credito/debito, Puntos Agricola, cuotas, Bitcoin, QuickPay
+- Todos los metodos de pago soportados: tarjeta credito/debito, Puntos Agricola, cuotas, Bitcoin, QuickPay, Nequi (opcional)
 - Validacion de webhooks via HMAC-SHA256
 - Auto-captura (Wompi captura al momento del pago)
 - Enlaces de pago de un solo uso
@@ -22,7 +22,7 @@ Recibe pagos en tu aplicacion de comercio digital con Medusa usando [Wompi El Sa
 ## Requisitos previos
 
 - [Node.js v20+](https://nodejs.org/en)
-- [Un backend Medusa v2](https://docs.medusajs.com/learn/installation)
+- [Un backend Medusa v2](https://docs.medusajs.com/learn/installation) (v2.13.0 o superior)
 - Una [cuenta Wompi](https://wompi.sv) con al menos un negocio configurado
 - Para pruebas locales, exponer localhost via [ngrok](https://ngrok.com/) o similar
 
@@ -100,6 +100,19 @@ module.exports = defineConfig({
 | `defaultRedirectUrl` | No | URL a donde se redirige al cliente despues del pago |
 | `defaultWebhookUrl` | No | URL del webhook para notificaciones de pago |
 | `defaultFormaPago` | No | Sobreescribe cuales metodos de pago estan habilitados en la pagina de pago |
+
+Por defecto se habilitan tarjeta, Puntos Agricola, cuotas, Bitcoin y QuickPay. Nequi se activa de forma explicita:
+
+```ts
+defaultFormaPago: {
+  permitirTarjetaCreditoDebido: true,
+  permitirPagoConPuntoAgricola: true,
+  permitirPagoEnCuotasAgricola: true,
+  permitirPagoEnBitcoin: true,
+  permitePagoQuickPay: true,
+  permitePagoNequi: true,
+},
+```
 
 ---
 
