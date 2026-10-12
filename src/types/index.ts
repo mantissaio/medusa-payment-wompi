@@ -63,6 +63,7 @@ export interface EnlaceFormaPago {
   permitirPagoEnCuotasAgricola: boolean;
   permitirPagoEnBitcoin: boolean;
   permitePagoQuickPay: boolean;
+  permitePagoNequi?: boolean;
 }
 
 export interface EnlaceInfoProducto {
@@ -226,7 +227,7 @@ export interface CreditCardTokenOutput {
 export interface CrearEnlacePagoRecurrenteDto {
   diaDePago: number;
   nombre: string;
-  idAplicativo: string;
+  idAplicativo?: string;
   monto: number;
   descripcionProducto?: string;
 }
@@ -257,9 +258,73 @@ export interface EnlacesPagoRecurrenteOutput {
 export interface EditarEnlacePagoRecurrenteDto {
   diaDePago?: number;
   nombre: string;
-  idAplicativo: string;
+  idAplicativo?: string;
   monto: number;
   descripcionProducto?: string;
+}
+
+/** GET /EnlacePagoRecurrente/{id}/suscripciones */
+export interface SuscripcionEnlacePagoRecurrenteOutput {
+  id?: string;
+  fechaCreacion: string;
+  alias?: string;
+  monto?: number;
+  pagosRealizados: number;
+  estado: EstadoSuscripcion;
+  idSuscriptor?: string;
+  nombreSuscriptor?: string;
+  fechaInicio: string;
+  diaPago: number;
+}
+
+// List query params (GET endpoints)
+
+export interface ListarEnlacesPagoParams {
+  FechaInicioVigencia?: string;
+  FechaFinVigencia?: string;
+  Nombre?: string;
+  IdAplicativo?: string;
+  Activo?: boolean;
+  CantidadPorPagina?: number;
+  PaginaActual?: number;
+  Ids?: number[];
+}
+
+export interface ListarTransaccionesParams {
+  CantidadPorPagina?: number;
+  PaginaActual?: number;
+  FechaInicio?: string;
+  FechaFin?: string;
+  NumeroCuenta?: string;
+  FormaPago?: FormaPago;
+  ResultadoTransaccion?: ResultadoTransaccion;
+  EmailCliente?: string;
+  IdAplicativo?: string;
+  MontoInicial?: number;
+  MontoFinal?: number;
+}
+
+export interface ListarEnlacesPagoRecurrenteParams {
+  Nombre?: string;
+  FechaCreacionDesde?: string;
+  FechaCreacionHasta?: string;
+  IdAplicativo?: string;
+  EsActivo?: boolean;
+  CantidadPorPagina?: number;
+  PaginaActual?: number;
+}
+
+export interface ListarSuscripcionesParams {
+  FechaRecurrenciaDesde?: string;
+  FechaRecurrenciaHasta?: string;
+  FechaCreacionDesde?: string;
+  FechaCreacionHasta?: string;
+  MontoDesde?: number;
+  MontoHasta?: number;
+  IdSuscriptor?: string;
+  PaginaActual?: number;
+  SuscripcionesPorPagina?: number;
+  Estado?: EstadoSuscripcion;
 }
 
 // Aplicativo DTOs
@@ -282,6 +347,15 @@ export interface AplicativoOutput {
   aplicaPagoConBitcoin: boolean;
   aplicaPagoConQuickPay: boolean;
   cuotasDisponibles?: CuotasOutput[];
+  tapOnPhone?: TapOnPhone;
+}
+
+export interface TapOnPhone {
+  usuarioEnrolo?: string;
+  fechaEnrolamiento?: string;
+  deviceId?: string;
+  retailerId?: string;
+  terminalId?: string;
 }
 
 // OAuth

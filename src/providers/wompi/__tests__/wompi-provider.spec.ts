@@ -87,8 +87,8 @@ describe("WompiProviderService", () => {
       } as any);
 
       expect(result.id).toBe("123");
-      expect(result.data.urlEnlace).toBe("https://lk.wompi.sv/abc");
-      expect(result.data.session_id).toBe("ps_123");
+      expect(result.data?.urlEnlace).toBe("https://lk.wompi.sv/abc");
+      expect(result.data?.session_id).toBe("ps_123");
 
       const callArg = client.createPaymentLink.mock.calls[0][0];
       expect(callArg.identificadorEnlaceComercio).toBe("ps_123");
@@ -120,7 +120,7 @@ describe("WompiProviderService", () => {
       const result = await service.authorizePayment({ data: { idEnlace: 100 } } as any);
 
       expect(result.status).toBe("authorized");
-      expect(result.data.idEnlace).toBe(100);
+      expect(result.data?.idEnlace).toBe(100);
     });
 
     it("returns AUTHORIZED from transacciones array fallback", async () => {
@@ -188,9 +188,9 @@ describe("WompiProviderService", () => {
     it("returns pending_manual refund data without throwing", async () => {
       const { service } = buildService();
       const result = await service.refundPayment({ amount: 10, data: { idEnlace: 100 } } as any);
-      expect(result.data.refund_status).toBe("pending_manual");
-      expect(result.data.refund_amount).toBe(10);
-      expect(result.data.idEnlace).toBe(100);
+      expect(result.data?.refund_status).toBe("pending_manual");
+      expect(result.data?.refund_amount).toBe(10);
+      expect(result.data?.idEnlace).toBe(100);
     });
   });
 
@@ -212,7 +212,7 @@ describe("WompiProviderService", () => {
 
       const result = await service.getPaymentStatus({ data: { idTransaccion: "tx_2" } } as any);
       expect(result.status).toBe("error");
-      expect(result.data.error_message).toBe("Fondos insuficientes");
+      expect(result.data?.error_message).toBe("Fondos insuficientes");
     });
 
     it("falls back to enlace lookup when no idTransaccion", async () => {
